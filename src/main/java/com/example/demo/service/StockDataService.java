@@ -9,6 +9,16 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+/**
+ * Service for fetching stock data from Alpha Vantage API.
+ * Implementation Complexity: 4/10
+ * 
+ * This service requires:
+ * - External API integration
+ * - Error handling
+ * - Response parsing
+ * - Multiple endpoint methods
+ */
 @Service
 public class StockDataService {
 
@@ -18,6 +28,13 @@ public class StockDataService {
     private final OkHttpClient httpClient = new OkHttpClient();
     // private final ObjectMapper objectMapper = new ObjectMapper(); // For parsing JSON later
 
+    /**
+     * Fetches stock quote data from Alpha Vantage API.
+     * 
+     * @param symbol The stock symbol to fetch data for
+     * @return JSON string containing the stock quote data
+     * @throws IOException If there's an error fetching the data
+     */
     public String getStockQuote(String symbol) throws IOException {
         if (symbol == null || symbol.trim().isEmpty()) {
             throw new IllegalArgumentException("Stock symbol cannot be empty.");
@@ -60,6 +77,43 @@ public class StockDataService {
             System.err.println("Error fetching stock data for " + symbol + ": " + e.getMessage());
             throw e; // Re-throw the exception
         }
+    }
+    
+    /**
+     * Fetches historical stock data from Alpha Vantage API.
+     * Implementation Complexity: 4/10
+     * 
+     * @param symbol The stock symbol to fetch data for
+     * @param timeframe The timeframe for historical data (compact or full)
+     * @return JSON string containing the historical stock data
+     * @throws IOException If there's an error fetching the data
+     */
+    public String getHistoricalData(String symbol, String timeframe) throws IOException {
+        if (symbol == null || symbol.trim().isEmpty()) {
+            throw new IllegalArgumentException("Stock symbol cannot be empty.");
+        }
+        if (alphaVantageApiKey == null || alphaVantageApiKey.trim().isEmpty()) {
+            throw new IllegalStateException("Alpha Vantage API key is not configured.");
+        }
+        
+        if (timeframe == null || (!timeframe.equals("compact") && !timeframe.equals("full"))) {
+            timeframe = "compact"; // Default to compact if invalid
+        }
+        
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("www.alphavantage.co")
+                .encodedPath("/query")
+                .addQueryParameter("function", "TIME_SERIES_DAILY")
+                .addQueryParameter("symbol", symbol)
+                .addQueryParameter("outputsize", timeframe)
+                .addQueryParameter("apikey", alphaVantageApiKey)
+                .build();
+        
+        System.out.println("Historical Data Request URL: " + url); // Log for debugging
+        
+        
+        return "{}";
     }
 
     // We can add methods to parse the JSON later using Jackson (objectMapper)

@@ -1,0 +1,108 @@
+/**
+ * Competitor Analysis Component Styles
+ * Implementation Complexity: 3/10
+ * 
+ * This stylesheet requires:
+ * - Basic layout styling
+ * - Card design
+ * - Responsive adjustments
+ */
+
+.competitor-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error-message {
+  color: #d9534f;
+  padding: 10px;
+  background-color: #f2dede;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.competitive-position {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.competitors-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.competitor-card {
+  flex: 1;
+  min-width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: white;
+}
+
+.competitor-header {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.competitor-name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.competitor-ticker {
+  margin-left: 5px;
+  color: #666;
+}
+
+.competitor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.strengths, .weaknesses, .metrics {
+  margin-bottom: 10px;
+}
+
+.strengths h6, .weaknesses h6, .metrics h6 {
+  margin-bottom: 8px;
+}
+
+.strengths ul, .weaknesses ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.metric-name {
+  font-weight: 500;
+}
+
+/* TODO: Add responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .competitors-list {
+    flex-direction: column;
+  }
+  
+  .competitor-card {
+    width: 100%;
+  }
+}
