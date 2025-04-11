@@ -1,8 +1,10 @@
-# Financial Analysis Prompts for Stock-Tok
+# Financial Analysis Prompts for Stock-Tok (30 ACU Budget Implementation)
 
-This document provides optimized prompts for leveraging Google's Gemini 2.5 Pro to perform financial analysis in the Stock-Tok application. These prompts are designed to help users make informed financial decisions through AI-enhanced stock analysis.
+This document provides optimized prompts for leveraging Google's Gemini 2.5 Pro to perform financial analysis in the Stock-Tok application. These prompts are specifically selected to fit within the 30 ACU budget constraint while providing maximum value.
 
-## Core Analysis Prompts
+> **Note:** For additional prompts that could be implemented in future iterations, see the [FUTURE_WORK.md](./FUTURE_WORK.md) file.
+
+## Core Analysis Prompts (5 ACU)
 
 ### 1. Company Context Analysis
 
@@ -38,29 +40,9 @@ This document provides optimized prompts for leveraging Google's Gemini 2.5 Pro 
 }
 ```
 
-### 2. Key Metrics Analysis
+## Competitor Analysis Prompt (10 ACU)
 
-```json
-{
-  "role": "financial_analyst",
-  "task": "Identify and analyze key metrics for {TICKER}",
-  "context": "Company is a {SIZE_CATEGORY} in {INDUSTRY} sector at {GROWTH_STAGE} stage",
-  "output_format": {
-    "ticker": "{TICKER}",
-    "metrics": [
-      {
-        "metricName": "<metric name>",
-        "importance": "<high|medium|low>",
-        "idealRange": "<ideal range for this company type>",
-        "analysis": "<brief analysis of this metric for the company>"
-      }
-    ],
-    "summary": "<overall assessment based on metrics>"
-  }
-}
-```
-
-### 3. Competitor Comparison
+### 2. Competitor Comparison
 
 ```json
 {
@@ -85,9 +67,9 @@ This document provides optimized prompts for leveraging Google's Gemini 2.5 Pro 
 }
 ```
 
-## Advanced Analysis Prompts
+## Trend Analysis Prompt (15 ACU)
 
-### 4. Trend Analysis
+### 3. Basic Trend Analysis
 
 ```json
 {
@@ -107,143 +89,7 @@ This document provides optimized prompts for leveraging Google's Gemini 2.5 Pro 
       "direction": "<strengthening|stable|weakening>",
       "analysis": "<analysis of financial health metrics over time>"
     },
-    "keyInflectionPoints": [
-      {
-        "period": "<time period>",
-        "event": "<significant change or event>",
-        "impact": "<impact on financial performance>"
-      }
-    ],
     "overallTrendAssessment": "<synthesis of all trend analyses>"
-  }
-}
-```
-
-### 5. Investment Hypothesis
-
-```json
-{
-  "role": "financial_analyst",
-  "task": "Generate investment hypotheses for {TICKER}",
-  "output_format": {
-    "ticker": "{TICKER}",
-    "hypotheses": [
-      {
-        "statement": "<clear, testable hypothesis>",
-        "rationale": "<economic or business logic>",
-        "testingApproach": "<how to test using historical data>",
-        "implicationsIfTrue": "<what this means for investors>"
-      }
-    ]
-  }
-}
-```
-
-### 6. Predictive Analysis
-
-```json
-{
-  "role": "financial_analyst",
-  "task": "Predict future performance for {TICKER} based on historical data",
-  "output_format": {
-    "ticker": "{TICKER}",
-    "shortTermOutlook": {
-      "timeframe": "Next 12 months",
-      "revenueGrowthPrediction": "<prediction with confidence level>",
-      "marginTrendPrediction": "<prediction with confidence level>",
-      "keyRisks": ["<risk 1>", "<risk 2>"]
-    },
-    "mediumTermOutlook": {
-      "timeframe": "1-3 years",
-      "growthTrajectory": "<prediction with confidence level>",
-      "competitivePositionChange": "<prediction with confidence level>",
-      "keyOpportunities": ["<opportunity 1>", "<opportunity 2>"]
-    },
-    "predictionConfidence": "<overall confidence assessment>",
-    "keyAssumptions": ["<assumption 1>", "<assumption 2>"]
-  }
-}
-```
-
-## Company Type-Specific Prompts
-
-### 7. High-Growth Tech Company Analysis
-
-```json
-{
-  "role": "financial_analyst",
-  "task": "Analyze {TICKER} as a high-growth tech company",
-  "output_format": {
-    "ticker": "{TICKER}",
-    "growthSustainability": {
-      "assessment": "<sustainable|concerning|unsustainable>",
-      "keyMetrics": {
-        "revenueGrowthRate": "<value>",
-        "userGrowthRate": "<value>",
-        "netRetentionRate": "<value>"
-      },
-      "analysis": "<analysis of growth sustainability>"
-    },
-    "pathToProfitability": {
-      "assessment": "<clear|uncertain|concerning>",
-      "estimatedTimeframe": "<timeframe>",
-      "keyMetrics": {
-        "grossMargin": "<value>",
-        "operatingLossPercent": "<value>",
-        "burnRate": "<value>"
-      },
-      "analysis": "<analysis of path to profitability>"
-    },
-    "unitEconomics": {
-      "assessment": "<strong|improving|concerning|weak>",
-      "keyMetrics": {
-        "ltv": "<value>",
-        "cac": "<value>",
-        "ltvCacRatio": "<value>",
-        "paybackPeriod": "<value>"
-      },
-      "analysis": "<analysis of unit economics>"
-    }
-  }
-}
-```
-
-### 8. Mature Dividend Company Analysis
-
-```json
-{
-  "role": "financial_analyst",
-  "task": "Analyze {TICKER} as a mature dividend company",
-  "output_format": {
-    "ticker": "{TICKER}",
-    "dividendSustainability": {
-      "assessment": "<very secure|secure|concerning|at risk>",
-      "keyMetrics": {
-        "dividendYield": "<value>",
-        "payoutRatio": "<value>",
-        "dividendGrowthRate": "<value>",
-        "yearsOfDividendGrowth": "<value>"
-      },
-      "analysis": "<analysis of dividend sustainability>"
-    },
-    "cashGenerationCapability": {
-      "assessment": "<strong|stable|declining|weak>",
-      "keyMetrics": {
-        "freeCashFlow": "<value>",
-        "fcfYield": "<value>",
-        "fcfToNetIncome": "<value>"
-      },
-      "analysis": "<analysis of cash generation capability>"
-    },
-    "competitivePosition": {
-      "assessment": "<strong|stable|eroding>",
-      "keyMetrics": {
-        "marketShare": "<value>",
-        "marginTrend": "<trend>",
-        "returnOnCapital": "<value>"
-      },
-      "analysis": "<analysis of competitive position>"
-    }
   }
 }
 ```
@@ -259,25 +105,32 @@ To implement these prompts in the Stock-Tok application:
 @Value("${gemini.prompt.context.json}")
 private String contextPromptTemplate;
 
-@Value("${gemini.prompt.metrics.json}")
-private String metricsPromptTemplate;
+@Value("${gemini.prompt.competitor.json}")
+private String competitorPromptTemplate;
 
-// Additional prompt templates...
+@Value("${gemini.prompt.trend.json}")
+private String trendPromptTemplate;
 
 public StockContextAnalysis analyzeStockContext(String ticker) {
-    // Existing implementation with updated prompts
+    // Implementation using context analysis prompt
+    String prompt = contextPromptTemplate.replace("{TICKER}", ticker);
+    String response = callGeminiApi(prompt);
+    return parseContextAnalysisResponse(response);
 }
 
-// Add new methods for additional analysis types
 public CompetitorAnalysis analyzeCompetitors(String ticker) {
     // Implementation using competitor comparison prompt
+    String prompt = competitorPromptTemplate.replace("{TICKER}", ticker);
+    String response = callGeminiApi(prompt);
+    return parseCompetitorAnalysisResponse(response);
 }
 
 public TrendAnalysis analyzeTrends(String ticker) {
     // Implementation using trend analysis prompt
+    String prompt = trendPromptTemplate.replace("{TICKER}", ticker);
+    String response = callGeminiApi(prompt);
+    return parseTrendAnalysisResponse(response);
 }
-
-// Additional analysis methods...
 ```
 
 2. **Create New DTOs**: Define data transfer objects for each analysis type:
@@ -292,7 +145,16 @@ public class CompetitorAnalysis {
     // Nested classes, getters, setters...
 }
 
-// Additional DTOs for other analysis types...
+// Example DTO for trend analysis
+public class TrendAnalysis {
+    private String ticker;
+    private TrendDirection profitabilityTrend;
+    private TrendDirection growthTrend;
+    private TrendDirection financialHealthTrend;
+    private String overallTrendAssessment;
+    
+    // Nested classes, getters, setters...
+}
 ```
 
 3. **Extend Controller**: Add endpoints for the new analysis types:
@@ -301,58 +163,59 @@ public class CompetitorAnalysis {
 // Example new endpoints in StockAnalysisController.java
 @GetMapping("/competitors/{symbol}")
 public ResponseEntity<?> getCompetitorAnalysis(@PathVariable String symbol) {
-    // Implementation
+    if (symbol == null || symbol.trim().isEmpty()) {
+        return ResponseEntity.badRequest().body("Stock symbol cannot be empty.");
+    }
+
+    String ticker = symbol.trim().toUpperCase();
+
+    try {
+        CompetitorAnalysis analysis = geminiAnalysisService.analyzeCompetitors(ticker);
+        return ResponseEntity.ok(analysis);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                       .body("Error analyzing competitors: " + e.getMessage());
+    }
 }
 
 @GetMapping("/trends/{symbol}")
 public ResponseEntity<?> getTrendAnalysis(@PathVariable String symbol) {
-    // Implementation
-}
+    if (symbol == null || symbol.trim().isEmpty()) {
+        return ResponseEntity.badRequest().body("Stock symbol cannot be empty.");
+    }
 
-// Additional endpoints...
+    String ticker = symbol.trim().toUpperCase();
+
+    try {
+        TrendAnalysis analysis = geminiAnalysisService.analyzeTrends(ticker);
+        return ResponseEntity.ok(analysis);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                       .body("Error analyzing trends: " + e.getMessage());
+    }
+}
 ```
 
-4. **Frontend Integration**: Create components to display the new analysis types:
+## Cost Optimization Strategies
 
-```typescript
-// Example component for competitor analysis
-@Component({
-  selector: 'app-competitor-analysis',
-  templateUrl: './competitor-analysis.component.html'
-})
-export class CompetitorAnalysisComponent {
-  @Input() symbol: string;
-  competitors: any;
-  
-  // Implementation
-}
+To maximize the value of the 30 ACU budget:
 
-// Additional components for other analysis types...
-```
+1. **Response Caching**:
+   ```java
+   // Example caching implementation
+   @Cacheable(value = "competitorAnalysis", key = "#ticker")
+   public CompetitorAnalysis analyzeCompetitors(String ticker) {
+       // Implementation
+   }
+   ```
 
-## Feedback Loop Implementation
+2. **Prompt Optimization**:
+   - Keep prompts concise while maintaining quality
+   - Use structured output formats to reduce token usage
+   - Remove unnecessary fields from response templates
 
-To implement a feedback loop for continuous improvement:
+3. **Batch Processing**:
+   - Pre-fetch and cache data for popular stocks
+   - Combine multiple analysis requests where possible
 
-1. **Track Prediction Accuracy**:
-   - Store predictions made by the system
-   - Compare with actual results when available
-   - Calculate accuracy metrics
-
-2. **Hypothesis Refinement**:
-   - Use the accuracy data to refine prompts
-   - Adjust weightings of different factors
-   - Eliminate or modify underperforming metrics
-
-3. **User Feedback Integration**:
-   - Allow users to rate analysis quality
-   - Collect specific feedback on what was helpful or misleading
-   - Use this feedback to improve prompts
-
-4. **Periodic Review**:
-   - Regularly review and update prompts based on:
-     - Market changes
-     - New financial metrics
-     - Emerging analysis techniques
-
-By implementing these prompts and the feedback loop, Stock-Tok can provide increasingly accurate and valuable financial analysis to help users make informed investment decisions.
+By implementing these optimized prompts and cost-saving strategies, Stock-Tok can provide valuable financial analysis within the 30 ACU budget constraint.

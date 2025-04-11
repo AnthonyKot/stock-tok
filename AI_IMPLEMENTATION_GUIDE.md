@@ -1,12 +1,12 @@
-# AI Integration Implementation Guide for Stock-Tok
+# AI Integration Implementation Guide for Stock-Tok (30 ACU Budget)
 
-This guide outlines how to enhance the existing Stock-Tok application with advanced AI capabilities, focusing on user experience improvements while leveraging the current Java + Angular architecture.
+This guide outlines how to enhance the existing Stock-Tok application with AI capabilities within a 30 ACU budget constraint. The implementation focuses on core features that provide the most value while leveraging the current Java + Angular architecture.
 
 ## Overview
 
-Stock-Tok already provides basic AI-enhanced stock analysis using Google's Gemini API. This implementation guide will help you extend these capabilities with more advanced features like predictive modeling, historical backtesting, and improved visualizations.
+Stock-Tok already provides basic AI-enhanced stock analysis using Google's Gemini API. This implementation guide will help you extend these capabilities with improved prompts, competitor analysis, and trend analysis, while also providing templates for UX improvements that can be implemented manually.
 
-> **Note:** For detailed prompts to use with Gemini 2.5 Pro, see the [PROMPTS.md](./PROMPTS.md) file, which contains optimized prompts for financial analysis.
+> **Note:** For detailed prompts to use with Gemini 2.5 Pro, see the [PROMPTS.md](./PROMPTS.md) file, which contains optimized prompts for financial analysis within our budget constraints. For features that exceed our current budget, see [FUTURE_WORK.md](./FUTURE_WORK.md).
 
 ## Current Architecture
 
@@ -18,9 +18,15 @@ Stock-Tok uses:
 
 ## Implementation Roadmap
 
-### Phase 1: Enhanced User Experience (High Priority)
+The implementation is divided into two tracks:
+1. **UX Improvements** - Templates for manual implementation (0 ACU)
+2. **Core AI Analysis** - Features implemented with Gemini 2.5 Pro (30 ACU)
 
-#### 1.1 Responsive Design Implementation
+### Phase 1: UX Improvements (Templates for Manual Implementation)
+
+These features can be implemented manually or with Gemini 2.0 Flash without using the 30 ACU budget.
+
+#### 1.1 Responsive Design Template
 
 ```typescript
 // stock-ui/src/styles.css
@@ -49,76 +55,7 @@ Stock-Tok uses:
 }
 ```
 
-#### 1.2 Dark Mode Implementation
-
-```typescript
-// stock-ui/src/app/app.component.ts
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  isDarkMode = false;
-
-  toggleDarkMode() {
-    this.isDarkMode = !this.isDarkMode;
-    document.body.classList.toggle('dark-theme', this.isDarkMode);
-    localStorage.setItem('darkMode', this.isDarkMode.toString());
-  }
-
-  ngOnInit() {
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode === 'true') {
-      this.isDarkMode = true;
-      document.body.classList.add('dark-theme');
-    }
-  }
-}
-```
-
-```html
-<!-- stock-ui/src/app/app.component.html -->
-<div class="theme-toggle">
-  <button (click)="toggleDarkMode()">
-    {{ isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode' }}
-  </button>
-</div>
-```
-
-```css
-/* stock-ui/src/styles.css */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #f5f5f5;
-  --border-color: #dddddd;
-  --primary-color: #3f51b5;
-}
-
-body.dark-theme {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --border-color: #333333;
-  --primary-color: #7986cb;
-}
-
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.analysis-results {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-}
-```
-
-#### 1.3 Historical Data Visualization
+#### 1.2 Historical Data Visualization Template
 
 First, update the backend to fetch historical data:
 
@@ -180,7 +117,131 @@ public ResponseEntity<?> getHistoricalData(@PathVariable String symbol,
 }
 ```
 
-Add Chart.js to the Angular project:
+Create a chart component template:
+
+```typescript
+// stock-ui/src/app/stock-chart/stock-chart.component.ts
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+@Component({
+  selector: 'app-stock-chart',
+  templateUrl: './stock-chart.component.html',
+  styleUrls: ['./stock-chart.component.css']
+})
+export class StockChartComponent implements OnChanges {
+  @Input() historicalData: any;
+  @Input() symbol: string = '';
+  chart: any;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['historicalData'] && this.historicalData) {
+      this.createChart();
+    }
+  }
+
+  createChart() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    const timeSeriesData = this.historicalData['Time Series (Daily)'];
+    if (!timeSeriesData) return;
+
+    const dates = Object.keys(timeSeriesData).sort();
+    const prices = dates.map(date => parseFloat(timeSeriesData[date]['4. close']));
+
+    const canvas = document.getElementById('stockChart') as HTMLCanvasElement;
+    this.chart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [{
+          label: `${this.symbol} Price`,
+          data: prices,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Price ($)'
+            }
+          }
+        }
+      }
+    });
+  }
+}
+```
+
+#### 1.3 Save/Favorite Stocks Template
+
+```typescript
+// stock-ui/src/app/services/favorites.service.ts
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FavoritesService {
+  private favorites: string[] = [];
+  private favoritesSubject = new BehaviorSubject<string[]>([]);
+  
+  favorites$ = this.favoritesSubject.asObservable();
+  
+  constructor() {
+    this.loadFavorites();
+  }
+  
+  private loadFavorites() {
+    const saved = localStorage.getItem('favoriteStocks');
+    if (saved) {
+      this.favorites = JSON.parse(saved);
+      this.favoritesSubject.next([...this.favorites]);
+    }
+  }
+  
+  private saveFavorites() {
+    localStorage.setItem('favoriteStocks', JSON.stringify(this.favorites));
+    this.favoritesSubject.next([...this.favorites]);
+  }
+  
+  addFavorite(symbol: string) {
+    if (!this.favorites.includes(symbol)) {
+      this.favorites.push(symbol);
+      this.saveFavorites();
+    }
+  }
+  
+  removeFavorite(symbol: string) {
+    const index = this.favorites.indexOf(symbol);
+    if (index !== -1) {
+      this.favorites.splice(index, 1);
+      this.saveFavorites();
+    }
+  }
+  
+  isFavorite(symbol: string): boolean {
+    return this.favorites.includes(symbol);
+  }
+}
+```:
 
 ```bash
 cd stock-ui
@@ -774,41 +835,48 @@ getPrediction(symbol: string): Observable<any> {
 Create a prediction component:
 
 ```typescript
-// stock-ui/src/app/prediction/prediction.component.ts
-import { Component, Input, OnChanges } from '@angular/core';
+## Frontend Integration
+
+To display the AI analysis results in the frontend, create components for each analysis type:
+
+### 1. Competitor Analysis Component
+
+```typescript
+// stock-ui/src/app/competitor-analysis/competitor-analysis.component.ts
+import { Component, Input, OnInit } from '@angular/core';
 import { StockApiService } from '../services/stock-api.service';
 
 @Component({
-  selector: 'app-prediction',
-  templateUrl: './prediction.component.html',
-  styleUrls: ['./prediction.component.css']
+  selector: 'app-competitor-analysis',
+  templateUrl: './competitor-analysis.component.html',
+  styleUrls: ['./competitor-analysis.component.css']
 })
-export class PredictionComponent implements OnChanges {
+export class CompetitorAnalysisComponent implements OnInit {
   @Input() symbol: string = '';
-  prediction: any = null;
+  competitors: any = null;
   isLoading: boolean = false;
   error: string = '';
   
   constructor(private stockApiService: StockApiService) {}
   
-  ngOnChanges() {
+  ngOnInit() {
     if (this.symbol) {
-      this.loadPrediction();
+      this.loadCompetitors();
     }
   }
   
-  loadPrediction() {
+  loadCompetitors() {
     this.isLoading = true;
-    this.prediction = null;
+    this.competitors = null;
     this.error = '';
     
-    this.stockApiService.getPrediction(this.symbol).subscribe({
+    this.stockApiService.getCompetitorAnalysis(this.symbol).subscribe({
       next: (data) => {
-        this.prediction = data;
+        this.competitors = data;
         this.isLoading = false;
       },
       error: (error) => {
-        this.error = error.error || 'Error loading prediction';
+        this.error = error.error || 'Error loading competitor analysis';
         this.isLoading = false;
       }
     });
@@ -817,128 +885,291 @@ export class PredictionComponent implements OnChanges {
 ```
 
 ```html
-<!-- stock-ui/src/app/prediction/prediction.component.html -->
-<div class="prediction-container">
-  <h4>Price Trend Prediction</h4>
+<!-- stock-ui/src/app/competitor-analysis/competitor-analysis.component.html -->
+<div class="competitor-container">
+  <h4>Competitor Analysis</h4>
   
   <div *ngIf="isLoading" class="loading-indicator">
-    Generating prediction...
+    Analyzing competitors...
   </div>
   
   <div *ngIf="error" class="error-message">
     {{ error }}
   </div>
   
-  <div *ngIf="prediction && !isLoading" class="prediction-result">
-    <div class="prediction-header">
-      <span class="prediction-symbol">{{ prediction.symbol }}</span>
-      <span class="prediction-trend" [ngClass]="prediction.trendPrediction">
-        {{ prediction.trendPrediction | titlecase }} Trend
-      </span>
-      <span class="prediction-confidence">
-        {{ prediction.confidence | titlecase }} Confidence
-      </span>
+  <div *ngIf="competitors && !isLoading" class="competitor-results">
+    <div class="competitive-position">
+      <h5>Competitive Position</h5>
+      <p>{{ competitors.competitivePosition }}</p>
     </div>
     
-    <div class="prediction-explanation">
-      <p>{{ prediction.explanation }}</p>
-      <p class="prediction-disclaimer">
-        Note: This is a simple prediction based on recent price movements and should not be used as financial advice.
-      </p>
+    <div class="competitors-list">
+      <div *ngFor="let competitor of competitors.competitors" class="competitor-card">
+        <div class="competitor-header">
+          <span class="competitor-name">{{ competitor.name }}</span>
+          <span class="competitor-ticker">({{ competitor.ticker }})</span>
+        </div>
+        
+        <div class="competitor-details">
+          <div class="strengths">
+            <h6>Strengths</h6>
+            <ul>
+              <li *ngFor="let strength of competitor.keyStrengths">{{ strength }}</li>
+            </ul>
+          </div>
+          
+          <div class="weaknesses">
+            <h6>Weaknesses</h6>
+            <ul>
+              <li *ngFor="let weakness of competitor.keyWeaknesses">{{ weakness }}</li>
+            </ul>
+          </div>
+          
+          <div class="metrics">
+            <h6>Key Metrics</h6>
+            <div *ngFor="let metric of competitor.comparisonMetrics | keyvalue" class="metric">
+              <span class="metric-name">{{ metric.key }}:</span>
+              <span class="metric-value">{{ metric.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 ```
 
-```css
-/* stock-ui/src/app/prediction/prediction.component.css */
-.prediction-container {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--card-bg);
-}
+### 2. Trend Analysis Component
 
-.prediction-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
+```typescript
+// stock-ui/src/app/trend-analysis/trend-analysis.component.ts
+import { Component, Input, OnInit } from '@angular/core';
+import { StockApiService } from '../services/stock-api.service';
 
-.prediction-symbol {
-  font-weight: bold;
-  font-size: 1.2em;
-  margin-right: 15px;
-}
-
-.prediction-trend {
-  padding: 5px 10px;
-  border-radius: 4px;
-  margin-right: 15px;
-}
-
-.prediction-trend.upward {
-  background-color: #4caf50;
-  color: white;
-}
-
-.prediction-trend.downward {
-  background-color: #f44336;
-  color: white;
-}
-
-.prediction-trend.neutral {
-  background-color: #ff9800;
-  color: white;
-}
-
-.prediction-confidence {
-  font-style: italic;
-}
-
-.prediction-explanation {
-  line-height: 1.5;
-}
-
-.prediction-disclaimer {
-  font-size: 0.9em;
-  font-style: italic;
-  color: var(--text-color-secondary);
-  margin-top: 15px;
+@Component({
+  selector: 'app-trend-analysis',
+  templateUrl: './trend-analysis.component.html',
+  styleUrls: ['./trend-analysis.component.css']
+})
+export class TrendAnalysisComponent implements OnInit {
+  @Input() symbol: string = '';
+  trends: any = null;
+  isLoading: boolean = false;
+  error: string = '';
+  
+  constructor(private stockApiService: StockApiService) {}
+  
+  ngOnInit() {
+    if (this.symbol) {
+      this.loadTrends();
+    }
+  }
+  
+  loadTrends() {
+    this.isLoading = true;
+    this.trends = null;
+    this.error = '';
+    
+    this.stockApiService.getTrendAnalysis(this.symbol).subscribe({
+      next: (data) => {
+        this.trends = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.error = error.error || 'Error loading trend analysis';
+        this.isLoading = false;
+      }
+    });
+  }
 }
 ```
 
-Update the stock analyzer component to include the prediction:
+```html
+<!-- stock-ui/src/app/trend-analysis/trend-analysis.component.html -->
+<div class="trend-container">
+  <h4>Financial Trend Analysis</h4>
+  
+  <div *ngIf="isLoading" class="loading-indicator">
+    Analyzing trends...
+  </div>
+  
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+  
+  <div *ngIf="trends && !isLoading" class="trend-results">
+    <div class="trend-summary">
+      <h5>Overall Assessment</h5>
+      <p>{{ trends.overallTrendAssessment }}</p>
+    </div>
+    
+    <div class="trend-details">
+      <div class="trend-card profitability">
+        <h5>Profitability Trend</h5>
+        <div class="trend-direction {{ trends.profitabilityTrend.direction }}">
+          {{ trends.profitabilityTrend.direction | titlecase }}
+        </div>
+        <p>{{ trends.profitabilityTrend.analysis }}</p>
+      </div>
+      
+      <div class="trend-card growth">
+        <h5>Growth Trend</h5>
+        <div class="trend-direction {{ trends.growthTrend.direction }}">
+          {{ trends.growthTrend.direction | titlecase }}
+        </div>
+        <p>{{ trends.growthTrend.analysis }}</p>
+      </div>
+      
+      <div class="trend-card financial-health">
+        <h5>Financial Health Trend</h5>
+        <div class="trend-direction {{ trends.financialHealthTrend.direction }}">
+          {{ trends.financialHealthTrend.direction | titlecase }}
+        </div>
+        <p>{{ trends.financialHealthTrend.analysis }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### 3. Update Stock API Service
+
+```typescript
+// stock-ui/src/app/services/stock-api.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StockApiService {
+  constructor(private http: HttpClient) {}
+  
+  getStockAnalysis(symbol: string): Observable<any> {
+    return this.http.get<any>(`/api/analyze/${symbol}`);
+  }
+  
+  getHistoricalData(symbol: string, timeframe: string = 'compact'): Observable<any> {
+    return this.http.get<any>(`/api/analyze/historical/${symbol}?timeframe=${timeframe}`);
+  }
+  
+  getCompetitorAnalysis(symbol: string): Observable<any> {
+    return this.http.get<any>(`/api/analyze/competitors/${symbol}`);
+  }
+  
+  getTrendAnalysis(symbol: string): Observable<any> {
+    return this.http.get<any>(`/api/analyze/trends/${symbol}`);
+  }
+}
+```
+
+### 4. Update Main Component
 
 ```html
 <!-- stock-ui/src/app/stock-analyzer/stock-analyzer.component.html -->
-<!-- Add after the historical chart -->
-<app-prediction *ngIf="analysisData" [symbol]="ticker"></app-prediction>
+<!-- Add after the existing analysis results -->
+<div class="advanced-analysis" *ngIf="analysisData">
+  <app-competitor-analysis [symbol]="ticker"></app-competitor-analysis>
+  <app-trend-analysis [symbol]="ticker"></app-trend-analysis>
+</div>
 ```
 
-### Phase 3: Advanced Features (Future Implementation)
+## Cost Optimization Strategies
 
-For future implementation, consider these more advanced features:
+To maximize the value of the 30 ACU budget:
 
-1. **Competitor Analysis**:
-   - Integrate with a company information API to identify competitors
-   - Use Gemini to compare companies in the same sector
+### 1. Response Caching
 
-2. **Portfolio Analysis**:
-   - Allow users to create and save portfolios
-   - Provide aggregate analysis across all stocks in a portfolio
+Implement caching to reduce redundant API calls:
 
-3. **News Integration**:
-   - Fetch relevant news articles about analyzed stocks
-   - Use Gemini to summarize news sentiment
+```java
+// src/main/java/com/example/demo/config/CacheConfig.java
+package com.example.demo.config;
 
-4. **Advanced Backtesting**:
-   - Implement a more sophisticated backtesting system
-   - Allow users to test different investment strategies
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableCaching
+public class CacheConfig {
+    
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("contextAnalysis", "competitorAnalysis", "trendAnalysis");
+    }
+}
+```
+
+Update the service methods with caching:
+
+```java
+// src/main/java/com/example/demo/service/GeminiAnalysisService.java
+@Cacheable(value = "contextAnalysis", key = "#ticker")
+public StockContextAnalysis analyzeStockContext(String ticker) {
+    // Implementation
+}
+
+@Cacheable(value = "competitorAnalysis", key = "#ticker")
+public CompetitorAnalysis analyzeCompetitors(String ticker) {
+    // Implementation
+}
+
+@Cacheable(value = "trendAnalysis", key = "#ticker")
+public TrendAnalysis analyzeTrends(String ticker) {
+    // Implementation
+}
+```
+
+### 2. Prompt Optimization
+
+Keep prompts concise to reduce token usage:
+
+- Remove unnecessary fields from prompts
+- Use structured output formats
+- Limit the depth of analysis to essential information
+
+### 3. Batch Processing
+
+Pre-fetch data for popular stocks during low-usage periods:
+
+```java
+// src/main/java/com/example/demo/service/PreFetchService.java
+package com.example.demo.service;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PreFetchService {
+    
+    private final GeminiAnalysisService geminiAnalysisService;
+    private final String[] popularStocks = {"AAPL", "MSFT", "GOOGL", "AMZN", "META"};
+    
+    public PreFetchService(GeminiAnalysisService geminiAnalysisService) {
+        this.geminiAnalysisService = geminiAnalysisService;
+    }
+    
+    @Scheduled(cron = "0 0 1 * * *") // Run at 1 AM every day
+    public void preFetchPopularStocks() {
+        for (String ticker : popularStocks) {
+            try {
+                geminiAnalysisService.analyzeStockContext(ticker);
+                geminiAnalysisService.analyzeCompetitors(ticker);
+                geminiAnalysisService.analyzeTrends(ticker);
+            } catch (Exception e) {
+                // Log error but continue with next stock
+            }
+        }
+    }
+}
+```
 
 ## Conclusion
 
-This implementation guide provides a roadmap for enhancing the Stock-Tok application with improved user experience and AI capabilities. By following the phases outlined above, you can transform the application into a more powerful and user-friendly tool for stock analysis.
+This implementation guide provides a focused roadmap for enhancing the Stock-Tok application with AI capabilities within a 30 ACU budget. By implementing the core AI analysis features (improved prompts, competitor analysis, and trend analysis) while providing templates for UX improvements, the application can deliver significant value to users without exceeding the budget constraints.
 
-The guide focuses on practical implementations that build upon the existing codebase, making it easier to integrate these enhancements without a complete rewrite. The emphasis on user experience improvements aligns with the priority identified by the project stakeholders.
+The guide emphasizes practical implementations that build upon the existing codebase, making it easier to integrate these enhancements without a complete rewrite. For features that exceed the current budget, refer to the [FUTURE_WORK.md](./FUTURE_WORK.md) document, which outlines additional enhancements that can be considered for future iterations.
