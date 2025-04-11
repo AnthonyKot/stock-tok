@@ -1,0 +1,10 @@
+.dockerignore
+.idx/
+.vscode/
+target/
+node_modules/
+dist/
+npm-debug.log
+.DS_Store
+stock-ui/.angular/
+stock-ui/node/

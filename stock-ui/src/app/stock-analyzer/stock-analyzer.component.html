@@ -1,0 +1,59 @@
+<h2>Stock Analyzer</h2>
+
+<div class="input-group">
+  <label for="tickerInput">Enter Stock Ticker:</label>
+  <input 
+    id="tickerInput" 
+    type="text" 
+    [(ngModel)]="ticker" 
+    placeholder="e.g., AAPL" 
+    (keyup.enter)="analyzeStock()">
+  <button (click)="analyzeStock()" [disabled]="isLoading">
+    {{ isLoading ? 'Analyzing...' : 'Analyze' }}
+  </button>
+</div>
+
+<div *ngIf="errorMessage" class="error-message">
+  Error: {{ errorMessage }}
+</div>
+
+<div *ngIf="isLoading" class="loading-indicator">
+  Loading analysis data...
+</div>
+
+<div *ngIf="analysisData && !isLoading" class="analysis-results">
+  <h3>Analysis for: {{ analysisData.contextAnalysis?.ticker }}</h3>
+
+  <!-- Display Quote Data -->
+  <div class="quote-data">
+    <h4>Quote Data (Alpha Vantage)</h4>
+    <div *ngIf="analysisData.quoteData?.['Global Quote'] as quote; else noQuote">
+      <p><strong>Symbol:</strong> {{ quote['01. symbol'] || 'N/A' }}</p>
+      <p><strong>Price:</strong> {{ quote['05. price'] || 'N/A' }}</p>
+      <p><strong>Previous Close:</strong> {{ quote['08. previous close'] || 'N/A' }}</p>
+      <p><strong>Change:</strong> {{ quote['09. change'] || 'N/A' }}</p>
+      <p><strong>Change Percent:</strong> {{ quote['10. change percent'] || 'N/A' }}</p>
+      <p><strong>Volume:</strong> {{ quote['06. volume'] || 'N/A' }}</p>
+      <p><strong>Latest Trading Day:</strong> {{ quote['07. latest trading day'] || 'N/A' }}</p>
+      </div>
+      <ng-template #noQuote>
+        <p>Quote data not available or in unexpected format.</p>
+        <pre>{{ analysisData.quoteData | json }}</pre> 
+      </ng-template>
+  </div>
+
+  <!-- Display Gemini Analysis -->
+  <div class="gemini-analysis">
+    <h4>Contextual Analysis (Gemini)</h4>
+    <div *ngIf="analysisData.contextAnalysis?.factors as factors; else noFactors">
+      <div *ngFor="let factor of factors" class="factor-item">
+        <p><strong>{{ factor.factorName }}:</strong> {{ factor.determination }}</p>
+        <p class="explanation"><em>Explanation:</em> {{ factor.explanation }}</p>
+      </div>
+    </div>
+    <ng-template #noFactors>
+      <p>Context analysis factors not available.</p>
+    </ng-template>
+  </div>
+
+</div>

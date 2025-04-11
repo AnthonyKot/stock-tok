@@ -1,0 +1,52 @@
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  margin-right: 10px;
+}
+
+.input-group input {
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.input-group button {
+  padding: 5px 10px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.loading-indicator {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.analysis-results {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 15px;
+}
+
+.quote-data,
+.gemini-analysis {
+  margin-bottom: 20px;
+}
+
+.factor-item {
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-left: 3px solid #eee;
+}
+
+.factor-item p {
+  margin: 3px 0;
+}
+
+.explanation {
+  color: #555;
+  font-size: 0.9em;
+}
