@@ -6,6 +6,8 @@ This guide outlines how to enhance the existing Stock-Tok application with advan
 
 Stock-Tok already provides basic AI-enhanced stock analysis using Google's Gemini API. This implementation guide will help you extend these capabilities with more advanced features like predictive modeling, historical backtesting, and improved visualizations.
 
+> **Note:** For detailed prompts to use with Gemini 2.5 Pro, see the [PROMPTS.md](./PROMPTS.md) file, which contains optimized prompts for financial analysis.
+
 ## Current Architecture
 
 Stock-Tok uses:
