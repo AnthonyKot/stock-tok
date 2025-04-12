@@ -1,0 +1,66 @@
+<!-- 
+  Competitor Analysis Component Template
+  Implementation Complexity: 4/10
+  
+  This template requires:
+  - Conditional rendering
+  - List rendering
+  - Basic styling
+  - Error state handling
+-->
+<div class="competitor-container">
+  <h4>Competitor Analysis</h4>
+  
+  <div *ngIf="isLoading" class="loading-indicator">
+    Analyzing competitors...
+  </div>
+  
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+  
+  <div *ngIf="competitors && !isLoading" class="competitor-results">
+    <!-- TODO: Implement competitive position section -->
+    <div class="competitive-position">
+      <h5>Competitive Position</h5>
+      <p>{{ competitors.competitivePosition }}</p>
+    </div>
+    
+    <!-- TODO: Implement competitors list with cards -->
+    <div class="competitors-list">
+      <div *ngFor="let competitor of competitors.competitors" class="competitor-card">
+        <div class="competitor-header">
+          <span class="competitor-name">{{ competitor.name }}</span>
+          <span class="competitor-ticker">({{ competitor.ticker }})</span>
+        </div>
+        
+        <div class="competitor-details">
+          <!-- TODO: Implement strengths section -->
+          <div class="strengths">
+            <h6>Strengths</h6>
+            <ul>
+              <li *ngFor="let strength of competitor.keyStrengths">{{ strength }}</li>
+            </ul>
+          </div>
+          
+          <!-- TODO: Implement weaknesses section -->
+          <div class="weaknesses">
+            <h6>Weaknesses</h6>
+            <ul>
+              <li *ngFor="let weakness of competitor.keyWeaknesses">{{ weakness }}</li>
+            </ul>
+          </div>
+          
+          <!-- TODO: Implement metrics comparison section -->
+          <div class="metrics">
+            <h6>Key Metrics</h6>
+            <div *ngFor="let metric of competitor.comparisonMetrics | keyvalue" class="metric">
+              <span class="metric-name">{{ metric.key }}:</span>
+              <span class="metric-value">{{ metric.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

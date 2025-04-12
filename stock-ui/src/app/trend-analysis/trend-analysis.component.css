@@ -1,0 +1,102 @@
+/**
+ * Trend Analysis Component Styles
+ * Implementation Complexity: 4/10
+ * 
+ * This stylesheet requires:
+ * - Card design
+ * - Trend direction styling
+ * - Responsive layout
+ */
+
+.trend-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error-message {
+  color: #d9534f;
+  padding: 10px;
+  background-color: #f2dede;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.overall-assessment {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.trend-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.trend-card {
+  flex: 1;
+  min-width: 250px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: white;
+}
+
+.trend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.trend-title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.trend-direction {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+}
+
+.positive-trend {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.neutral-trend {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+
+.negative-trend {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+.trend-analysis {
+  line-height: 1.5;
+}
+
+/* TODO: Add responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .trend-cards {
+    flex-direction: column;
+  }
+  
+  .trend-card {
+    width: 100%;
+  }
+}
